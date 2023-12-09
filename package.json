@@ -4,11 +4,21 @@
   "description": "Recipe Cost with node",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "DEBUG=app nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tailwind": "npx tailwindcss -i ./src/css/input.css -o ./public/css/output.css --watch"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "debug": "^4.3.4",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "morgan": "^1.10.0",
     "npm": "^10.2.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "tailwindcss": "^3.3.6"
   }
 }
