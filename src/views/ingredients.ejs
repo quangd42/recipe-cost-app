@@ -9,7 +9,7 @@
     <h1 class="text-center mb-10">All Ingredients</h1>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <section class="col-span-1 md:col-span-2 px-4">
-        <% if (!ingredient_list) { %>
+        <% if (!INGREDIENT_LIST) { %>
         <h2 class="mb-5">No ingredients!</h2>
         <p>Add more using the form on the right.</p>
         <% } else { %>
@@ -33,16 +33,16 @@
             </thead>
             <tbody>
 
-              <% ingredient_list.forEach(ingredient => { %>
+              <% INGREDIENT_LIST.forEach(ingredient => { %>
               <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <td class="ingredient-name py-4 px-6 text-gray-900 dark:text-white">
-                  <div class="flex items-center space-x-3"><%= ingredient.ingredient_name %></div>
+                  <div class="flex items-center space-x-3"><%= ingredient.name %></div>
                 </td>
                 <td class="py-4 px-6 text-gray-900 dark:text-white capitalize">
-                  <div class="flex items-center space-x-3"><%= ingredient.ingredient_unit %></div>
+                  <div class="flex items-center space-x-3"><%= ingredient.unit %></div>
                 </td>
                 <td class="py-4 px-6 text-gray-900 dark:text-white">
-                  <div class="flex items-center space-x-3"><%= ingredient.unit_cost %></div>
+                  <div class="flex items-center space-x-3"><%= ingredient.unitCost %></div>
                 </td>
                 <td class="py-4 px-6 flex justify-start gap-4">
                   <a href="/ingredients/<%= ingredient.id %>" class="font-medium cursor-pointer text-blue-600 dark:text-blue-500">Edit</a>
@@ -59,11 +59,11 @@
       <section class="col-span-1 md:col-span-1 px-4">
         <div class="shadow-md sm:rounded-lg bg-white p-4">
           <h2 class="mb-4">Add Ingredients</h2>
-          <form action="/add-ingre" method="POST">
+          <form action="/ingredients" method="POST">
             <div class="">
               <div class="mb-4">
                 <label for="ingredient" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ingredient</label>
-                <input type="text" id="ingredient" autofocus autocomplete="off" name="ingredient" placeholder="e.g. Egg" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <input type="text" id="ingredient" autofocus autocomplete="off" name="name" placeholder="e.g. Egg" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               </div>
               <div class="mb-4">
                 <label for="unit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Unit</label>
@@ -75,9 +75,9 @@
                 </select>
               </div>
               <div class="mb-4">
-                <label for="unit_cost" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Cost per Unit
+                <label for="unitCost" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Cost per Unit
                   (1,000 VND)</label>
-                <input type="number" id="unit_cost" name="unit_cost" placeholder="5" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <input type="number" id="unitCost" name="unitCost" placeholder="5" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               </div>
             </div>
             <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Save</button>

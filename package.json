@@ -4,7 +4,7 @@
   "description": "Recipe Cost with node",
   "main": "index.js",
   "scripts": {
-    "start": "DEBUG=app nodemon server.js",
+    "start": "DEBUG=app,app:* nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "tailwind": "npx tailwindcss -i ./src/css/input.css -o ./public/css/output.css --watch"
   },
@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "debug": "^4.3.4",
+    "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "mongodb": "^6.3.0",

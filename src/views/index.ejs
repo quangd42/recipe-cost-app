@@ -34,9 +34,9 @@
               <div class="flex items-center space-x-3">
                 <select id="row_item_name_0" class="row-item-name bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-1 px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                   <option selected>Choose Ingredient</option>
-                  <% ingredients.forEach( ingredient => { %>
+                  <% INGREDIENT_LIST.forEach( ingredient => { %>
                   <option value="<%= ingredient.id %>">
-                    <%= ingredient.ingredient_name %> <% }) %>
+                    <%= ingredient.name %> <% }) %>
                   </option>
                 </select>
               </div>
