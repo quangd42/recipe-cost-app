@@ -1,10 +1,11 @@
 const express = require('express');
 const db = require('../connection.js');
-const bodyParser = require('body-parser');
 const debug = require('debug')('app:ingredients');
+const { ObjectId } = require('mongodb');
 
 ingredientsRouter = express.Router();
-ingredientsRouter.use(bodyParser.json());
+ingredientsRouter.use(express.json());
+ingredientsRouter.use(express.urlencoded({ extended: true }));
 
 // TODO: Create Ingredient class
 // TODO: Create validation for unit and unitCost
@@ -44,45 +45,150 @@ const SUPPORTED_UNITS = [
 const createIngredient = async (ingredient) => {
   const client = await db.connect();
   const collection = client.db(db.dbName).collection('ingredients');
+
   const res = await collection.insertOne(ingredient);
+
+  return res;
+};
+
+const getIngredient = async (ingredientId) => {
+  const client = await db.connect();
+  const collection = client.db(db.dbName).collection('ingredients');
+
+  const objectId = new ObjectId(ingredientId);
+  const res = await collection.findOne({ _id: objectId });
+
+  return res;
+};
+
+const getIngredients = async () => {
+  const client = await db.connect();
+  const collection = client.db(db.dbName).collection('ingredients');
+
+  const options = {
+    sort: { name: 1 },
+    projection: { _id: 1, name: 1, unit: 1, unitCost: 1 },
+  };
+  const res = await collection.find({}, options).toArray();
+
+  return res;
+};
+
+const updateIngredient = async (ingredientId, updates) => {
+  const client = await db.connect();
+  const collection = client.db(db.dbName).collection('ingredients');
+
+  const objectId = new ObjectId(ingredientId);
+  const filter = { _id: objectId };
+  const updateDoc = {
+    $set: updates,
+  };
+
+  const res = await collection.updateOne(filter, updateDoc);
+
+  return res;
+};
+
+const deleteIngredient = async (ingredientId) => {
+  const client = await db.connect();
+  const collection = client.db(db.dbName).collection('ingredients');
+
+  const objectId = new ObjectId(ingredientId);
+  const filter = { _id: objectId };
+
+  const res = await collection.deleteOne(filter);
+
   return res;
 };
 
 ingredientsRouter
   .route('/')
-  .get((req, res) => {
-    res.render('ingredients', {
-      title: 'Pantry',
-      currentUser: {
-        isAuthenticated: true,
-      },
-      INGREDIENT_LIST,
-      SUPPORTED_UNITS,
-    });
+  .get(async (req, res) => {
+    try {
+      const ingredients = await getIngredients();
+      // const ingredients = INGREDIENT_LIST;
+
+      res.render('ingredients', {
+        title: 'Pantry',
+        currentUser: {
+          isAuthenticated: true,
+        },
+        ingredients,
+        SUPPORTED_UNITS,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send('Error getting ingredients');
+    }
   })
   .post(async (req, res) => {
     const ingredient = req.body;
     try {
       const result = await createIngredient(ingredient);
-      debug(result);
-      res.send(`Ingredient ${result.insertedId} added`);
+      res.send({ message: `Ingredient ${result.insertedId} added` });
+      // res.send({ message: `${ingredient}` });
     } catch (err) {
-      debug(err);
+      console.log(err);
       res.status(500).send('Error adding ingredient');
     }
   });
 
 ingredientsRouter
   .route('/:id')
-  .get((req, res) => {
-    debug(`Getting ${req.params}`);
-    res.send(`Getting ${req.params.id}`);
+  .get(async (req, res) => {
+    try {
+      const ingredientId = req.params.id;
+      const ingredient = await getIngredient(ingredientId);
+
+      res.render('ingredient', {
+        title: `Edit ${ingredient.name}`,
+        currentUser: {
+          isAuthenticated: true,
+        },
+        ingredient,
+        SUPPORTED_UNITS,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send('Error getting ingredient');
+    }
   })
-  .post((req, res) => {
-    let ingredient = req.console.log(`Posting ${req.params}`);
+  .post(async (req, res) => {
+    try {
+      const ingredientId = req.params.id;
+      const updates = req.body;
+
+      // console.log(`Received updates: ${JSON.stringify(req.body)}`);
+      const result = await updateIngredient(ingredientId, updates);
+      console.log(result);
+
+      if (result.modifiedCount === 1) {
+        console.log(`Successfully modified one ingredient.`);
+      } else {
+        console.log(`No ingredient modified`);
+      }
+
+      res.send({ message: `Ingredient updated.` });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send('Error modifying ingredient');
+    }
   })
-  .delete((req, res) => {
-    res.send(`Deleting ${req.params.id}`);
+  .delete(async (req, res) => {
+    try {
+      console.log(req.params.id);
+      // TODO: find out how to query by ObjectId
+      const result = await deleteIngredient(req.params.id);
+      console.log(result);
+      if (result.deletedCount === 1) {
+        console.log('Successfully deleted one document.');
+      } else {
+        console.log('No documents matched the query. Deleted 0 documents.');
+      }
+    } catch (err) {
+      console.log(err);
+      res.status(500).send('Error deleting ingredient');
+    }
   });
 
 module.exports = {

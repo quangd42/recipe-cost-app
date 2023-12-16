@@ -2,7 +2,6 @@ const express = require('express');
 const morgan = require('morgan');
 const path = require('path');
 const ejs = require('ejs');
-const bodyParser = require('body-parser');
 
 const {
   ingredientsRouter,
@@ -27,8 +26,13 @@ const ingredients = [
   },
 ];
 
-app.use(morgan('tiny'));
-app.use(bodyParser.json());
+app.use(morgan('dev'));
+app.use(express.json());
+
+app.use((req, res, next) => {
+  console.log('Received request:', req.method, req.path, req.body);
+  next();
+});
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

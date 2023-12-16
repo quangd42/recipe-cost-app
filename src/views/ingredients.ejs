@@ -1,4 +1,4 @@
-<!-- ingredients.ejs -->
+<!-- ingredient.ejs -->
 <!DOCTYPE html>
 <html lang="en">
 <%- include('header') %>
@@ -9,7 +9,7 @@
     <h1 class="text-center mb-10">All Ingredients</h1>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <section class="col-span-1 md:col-span-2 px-4">
-        <% if (!INGREDIENT_LIST) { %>
+        <% if (ingredients.length === 0) { %>
         <h2 class="mb-5">No ingredients!</h2>
         <p>Add more using the form on the right.</p>
         <% } else { %>
@@ -33,7 +33,7 @@
             </thead>
             <tbody>
 
-              <% INGREDIENT_LIST.forEach(ingredient => { %>
+              <% ingredients.forEach((ingredient) => { %>
               <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <td class="ingredient-name py-4 px-6 text-gray-900 dark:text-white">
                   <div class="flex items-center space-x-3"><%= ingredient.name %></div>
@@ -45,8 +45,8 @@
                   <div class="flex items-center space-x-3"><%= ingredient.unitCost %></div>
                 </td>
                 <td class="py-4 px-6 flex justify-start gap-4">
-                  <a href="/ingredients/<%= ingredient.id %>" class="font-medium cursor-pointer text-blue-600 dark:text-blue-500">Edit</a>
-                  <input type="submit" value="Delete" onclick="deleteIngredient(<%= ingredient.id %>)" class="remove-button cursor-pointer font-medium text-red-600 dark:text-red-500"></input>
+                  <a href="/ingredients/<%= ingredient._id %>" class="font-medium cursor-pointer text-blue-600 dark:text-blue-500">Edit</a>
+                  <input type="submit" value="Delete" data-id="<%= ingredient._id %>" class="remove-button cursor-pointer font-medium text-red-600 dark:text-red-500"></input>
                 </td>
               </tr>
               <% }) %>
@@ -59,16 +59,16 @@
       <section class="col-span-1 md:col-span-1 px-4">
         <div class="shadow-md sm:rounded-lg bg-white p-4">
           <h2 class="mb-4">Add Ingredients</h2>
-          <form action="/ingredients" method="POST">
+          <form id="add_ingredient" action="/ingredients" method="POST">
             <div class="">
               <div class="mb-4">
                 <label for="ingredient" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ingredient</label>
-                <input type="text" id="ingredient" autofocus autocomplete="off" name="name" placeholder="e.g. Egg" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <input type="text" id="ingredient_name" autofocus autocomplete="off" name="name" placeholder="e.g. Egg" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               </div>
               <div class="mb-4">
                 <label for="unit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Unit</label>
                 <select id="unit" name="unit" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                  <option selected>Choose a Unit</option>
+                  <option value="default" selected>Choose a Unit</option>
                   <% SUPPORTED_UNITS.forEach(unit => { %>
                   <option value="<%= unit.symbol %>"><%= unit.name %></option>
                   <% }) %>
@@ -103,6 +103,50 @@
         }
       }
     }
+    const removeButtons = document.querySelectorAll('.remove-button');
+    removeButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        deleteIngredient(button.dataset.id)
+      })
+    })
+  </script>
+  <script>
+    // Send AJAX request to add ingredient
+    const addIngredient = () => {
+      const nameInput = document.querySelector('#ingredient_name');
+      const unitInput = document.querySelector('#unit');
+      const unitCostInput = document.querySelector('#unitCost');
+      const ingredient = {
+        name: nameInput.value,
+        unit: unitInput.value,
+        unitCost: unitCostInput.value,
+      };
+      fetch('/ingredients', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(ingredient),
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Success:', data);
+          // Clear the input fields
+          nameInput.value = '';
+          unitInput.value = 'default';
+          unitCostInput.value = '';
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    }
+
+    // Button to trigger the AJAX request
+    const submitButton = document.querySelector('#add_ingredient button[type="submit"]');
+    submitButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      addIngredient();
+    });
   </script>
 </body>
 
