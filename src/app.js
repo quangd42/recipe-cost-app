@@ -8,6 +8,7 @@ const {
   SUPPORTED_UNITS,
   INGREDIENT_LIST,
 } = require('./routes/ingredients');
+const { getIngredients, apiRouter } = require('./routes/api');
 
 const app = express();
 
@@ -39,19 +40,21 @@ app.set('view engine', 'ejs');
 app.use(express.static('./public'));
 
 // Render Home page
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+  const ingredients = await getIngredients();
   res.render('index', {
     title: 'Home',
     currentUser: {
       isAuthenticated: true,
     },
-    INGREDIENT_LIST,
+    ingredients,
     SUPPORTED_UNITS,
   });
 });
 
 // Ingredients Route
 app.use('/ingredients', ingredientsRouter);
+app.use('/api', apiRouter);
 
 app.post('/get-ingredient-data', (req, res) => {
   let ingredient = ingredients.find((ingredient) => {
