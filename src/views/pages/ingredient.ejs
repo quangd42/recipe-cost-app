@@ -40,16 +40,18 @@
       unitCost,
     };
 
-    fetch('/ingredients/<%= ingredient._id %>', {
-        method: 'POST',
+    fetch('/api/ingredients/<%= ingredient._id %>', {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(ingredient),
       })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Success:', data);
+      .then(res => {
+        // console.log(res);
+        if (res.ok) {
+          window.location.href = '/ingredients'
+        }
       })
       .catch((error) => {
         console.error('Error:', error);
