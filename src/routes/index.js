@@ -1,8 +1,7 @@
 const express = require('express');
-const db = require('../connection.js');
 const debug = require('debug')('app:index');
 
-const { getIngredients, apiRouter } = require('./api.js');
+const { getIngredients } = require('../services/ingredientsServices.js');
 
 const { SUPPORTED_UNITS } = require('./ingredients.js');
 
