@@ -1,0 +1,206 @@
+<main class="sm:px-4 py-8 bg-gray-50">
+  <h1 class="text-center mb-6">Recipe Cost Calculator</h1>
+  <div class="flex justify-start px-4 mb-4">
+    <button type="button" id="addButton" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-800">
+      Add Ingredient
+    </button>
+  </div>
+  <div class="overflow-x-auto shadow-md sm:rounded-lg mb-4">
+    <table id="recipe-calc" class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+      <thead class="text-xs text-white uppercase bg-blue-700 dark:bg-gray-700 dark:text-gray-400">
+        <tr>
+          <th scope="col" class="py-3 px-6">Ingredient</th>
+          <th scope="col" class="py-3 px-6">Quantity</th>
+          <th scope="col" class="py-3 px-6 border-l">Ingredient Unit</th>
+          <th scope="col" class="py-3 px-6 border-r">
+            Unit Cost (1,000 VND)
+          </th>
+          <th scope="col" class="py-3 px-6 border-x">
+            Item Cost (1,000 VND)
+          </th>
+          <th scope="col" class="py-3 px-6">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="row_0" class="calc-row hidden bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+          <td class="py-4 px-6 text-gray-900 dark:text-white">
+            <div class="flex items-center space-x-3">
+              <select id="row_item_name_0" class="row-item-name bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-1 px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option selected>Choose Ingredient</option>
+                <% ingredients.forEach( ingredient => { %>
+                <option value="<%= ingredient._id %>">
+                  <%= ingredient.name %> <% }) %>
+                </option>
+              </select>
+            </div>
+          </td>
+          <td class="py-4 px-6">
+            <div class="flex items-center space-x-3">
+              <div>
+                <input id="row_qty_0" type="number" value="" class="row-qty bg-gray-50 w-28 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="0" required />
+              </div>
+            </div>
+          </td>
+          <td class="py-4 px-6 text-gray-900 dark:text-white border-l">
+            <select class="ingredient-unit bg-transparent appearance-none border-0 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-1 px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>
+              <option selected>---</option>
+              <% SUPPORTED_UNITS.forEach(unit => { %>
+              <option value="<%= unit.symbol %>"><%= unit.name %></option>
+              <% }) %>
+            </select>
+          </td>
+          <td class="py-4 px-6 text-gray-900 dark:text-white border-r">
+            <div class="flex items-center space-x-3">
+              <div>
+                <input id="row_unit_cost_0" type="number" value="" class="row-unit-cost bg-gray-50 w-28 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="0" required />
+              </div>
+            </div>
+          </td>
+          <td class="py-4 px-6 font-semibold text-gray-900 dark:text-white border-x">
+            <div class="flex items-center space-x-3">
+              <div>
+                <input id="row_cost_0" type="number" disabled class="row-cost bg-transparent w-28 border-0 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="0" />
+              </div>
+            </div>
+          </td>
+          <td class="py-4 px-6">
+            <button disabled class="remove-button hover:disabled:cursor-not-allowed disabled:opacity-75 font-medium text-red-600 dark:text-red-500">
+              Remove
+            </button>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="font-semibold text-gray-900 dark:text-white bg-white border-t-4">
+          <th scope="row" class="py-3 px-6 text-base">Total</th>
+          <td class="py-3 px-6"></td>
+          <td class="py-3 px-6"></td>
+          <td class="py-3 px-6"></td>
+          <td id="total_cost" class="py-3 px-6">0 VND</td>
+          <td class="py-3 px-6"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</main>
+
+<!-- Google jQuery Library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+<script>
+  // Calculate costs
+  // Calculate total cost function
+  function calcTotalCost() {
+    let rowCosts = document.querySelectorAll(".row-cost");
+    let totalCost = 0;
+    rowCosts.forEach((item) => {
+      totalCost += parseFloat(item.value);
+    });
+    // Multiply with 1000 to display cost in VND
+    totalCost = totalCost * 1000;
+    document.querySelector("#total_cost").innerHTML =
+      totalCost.toLocaleString() + " VND";
+  }
+
+  // Calculate cost for a row
+  function calcRowCost(row) {
+    let costField = row.find(".row-cost");
+    let unitCost = row.find(".row-unit-cost");
+    let qty = row.find(".row-qty");
+    if (qty.val() && unitCost.val()) {
+      let cost = qty.val() * unitCost.val();
+      costField.val(cost.toFixed(2));
+      calcTotalCost();
+    }
+  }
+  // Add listener - Event is input so that all costs are calculated asap
+  $(document).on("input", ".row-unit-cost, .row-qty", function() {
+    calcRowCost($(this).closest("tr"));
+  });
+
+  // Table rows manipulations
+  // Function to remove row
+  function removeRow(row) {
+    // Simply remove target from DOM then recalculate all costs
+    row.remove();
+    calcTotalCost();
+    // When there are only 2 remove buttons left (including button 0) disable remove button
+    removeButtons = document.querySelectorAll(".remove-button");
+    if (removeButtons.length == 2) {
+      removeButtons.forEach((item) => {
+        item.setAttribute("disabled", "");
+      });
+    }
+  }
+
+  // Add listener on remove buttons
+  $(document).on("click", "button.remove-button", function() {
+    calcTotalCost();
+    removeRow($(this).closest("tr"));
+  });
+
+  // Add row to tbody
+  let row_index = 0;
+
+  function addRow() {
+    // Get table elements
+    let table = document.querySelector("#recipe-calc");
+    let tableBody = document.querySelector("#recipe-calc tbody");
+
+    // Clone row 0
+    let clone = table.rows[1].cloneNode(true);
+
+    // Update clone ids
+    row_index++;
+    clone.id = "row_" + row_index;
+    // Remove hidden property
+    clone.classList.remove("hidden");
+    // Fix value of row_item_name
+    clone.querySelector("#row_item_name_0").id =
+      "row_item_name_" + row_index;
+    // Fix value of row_qty
+    clone.querySelector("#row_qty_0").id = "row_qty_" + row_index;
+    // Fix value of row_unit_cost
+    clone.querySelector("#row_unit_cost_0").id =
+      "row_unit_cost_" + row_index;
+    // Fix value of row_cost
+    clone.querySelector("#row_cost_0").id = "row_cost_" + row_index;
+    // Append clone to tableBody
+    tableBody.appendChild(clone);
+    // Activate remove buttons after second row is added
+    // Rows are: header, footer, hidden row 0, 2 visible row
+    let removeButtons = document.querySelectorAll(".remove-button");
+    if (removeButtons.length == 3) {
+      removeButtons.forEach((item) => {
+        item.removeAttribute("disabled");
+      });
+    }
+  }
+  // Add listener to addButton
+  $("#addButton").on("click", () => {
+    addRow();
+  });
+  // Add one row on page load
+  $(addRow());
+
+  // Populate ingredient data from options
+  $(document).on("change", ".row-item-name", function() {
+    let ingredientId = $(this).val();
+    let row = $(this).closest("tr");
+    let unitCost = row.find(".row-unit-cost");
+    let ingredientUnit = row.find(".ingredient-unit");
+
+    $.ajax({
+      type: "GET",
+      url: `/api/ingredients/${ingredientId}`,
+      success: function(response) {
+        unitCost.val(response.unitCost);
+        ingredientUnit.val(response.unit);
+        calcRowCost(row);
+      },
+      error: function(error) {
+        console.log(error);
+      },
+    });
+  });
+</script>

@@ -35,7 +35,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views/layout'));
 app.set('view engine', 'ejs');
 app.use(express.static('./public'));
 
@@ -44,6 +44,7 @@ app.get('/', async (req, res) => {
   const ingredients = await getIngredients();
   res.render('index', {
     title: 'Home',
+    template: 'index',
     currentUser: {
       isAuthenticated: true,
     },

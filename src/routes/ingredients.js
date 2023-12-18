@@ -48,37 +48,36 @@ const SUPPORTED_UNITS = [
   { symbol: 'oz', name: 'Ounces' },
 ];
 
-ingredientsRouter
-  .route('/')
-  .get(async (req, res) => {
-    try {
-      const ingredients = await getIngredients();
-      // const ingredients = INGREDIENT_LIST;
+ingredientsRouter.route('/').get(async (req, res) => {
+  try {
+    const ingredients = await getIngredients();
+    // const ingredients = INGREDIENT_LIST;
 
-      res.render('ingredients', {
-        title: 'Pantry',
-        currentUser: {
-          isAuthenticated: true,
-        },
-        ingredients,
-        SUPPORTED_UNITS,
-      });
-    } catch (err) {
-      console.log(err);
-      res.status(500).send('Error getting ingredients');
-    }
-  })
-  .post(async (req, res) => {
-    const ingredient = req.body;
-    try {
-      const result = await createIngredient(ingredient);
+    res.render('index', {
+      title: 'Pantry',
+      template: 'ingredients',
+      currentUser: {
+        isAuthenticated: true,
+      },
+      ingredients,
+      SUPPORTED_UNITS,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send('Error getting ingredients');
+  }
+});
+// .post(async (req, res) => {
+//   const ingredient = req.body;
+//   try {
+//     const result = await createIngredient(ingredient);
 
-      res.redirect(`/ingredients/`);
-    } catch (err) {
-      console.log(err);
-      res.status(500).send('Error adding ingredient');
-    }
-  });
+//     res.redirect(`/ingredients/`);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).send('Error adding ingredient');
+//   }
+// })
 
 ingredientsRouter
   .route('/:id')
@@ -87,8 +86,9 @@ ingredientsRouter
       const ingredientId = req.params.id;
       const ingredient = await getIngredient(ingredientId);
 
-      res.render('ingredient', {
+      res.render('index', {
         title: `Edit ${ingredient.name}`,
+        template: 'ingredient',
         currentUser: {
           isAuthenticated: true,
         },
