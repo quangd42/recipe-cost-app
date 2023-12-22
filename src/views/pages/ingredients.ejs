@@ -32,7 +32,7 @@
                 <div class="flex items-center space-x-3"><%= ingredient.name %></div>
               </td>
               <td class="py-4 px-6 text-gray-900 dark:text-white capitalize">
-                <div class="flex items-center space-x-3"><%= ingredient.unit %></div>
+                <div class="flex items-center space-x-3"><%= ingredient.unit.name %></div>
               </td>
               <td class="py-4 px-6 text-gray-900 dark:text-white">
                 <div class="flex items-center space-x-3"><%= ingredient.unitCost %></div>
@@ -60,7 +60,7 @@
             </div>
             <div class="mb-4">
               <label for="unit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Unit</label>
-              <select id="unit" name="unit" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+              <select id="unit" name="unit" required class="bg-gray-50 border border-gray-300 capitalize text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 <option value="default" selected>Choose a Unit</option>
                 <% SUPPORTED_UNITS.forEach(unit => { %>
                 <option value="<%= unit.symbol %>"><%= unit.name %></option>
@@ -90,21 +90,24 @@
         if (!res.ok) {
           alert('Something went wrong, please try again later.')
           console.log(res)
+        } else {
+          const row = button.closest('tr');
+          row.remove();
         }
-        const row = button.closest('tr');
-        row.remove();
       }).catch((err) => {
         console.error(err)
       })
     }
   }
-
-  const removeButtons = document.querySelectorAll('.remove-button');
-  removeButtons.forEach(button => {
-    button.addEventListener('click', async () => {
-      const res = await deleteIngredient(button);
+  const setRemoveEvents = () => {
+    const removeButtons = document.querySelectorAll('.remove-button');
+    removeButtons.forEach(button => {
+      button.addEventListener('click', async () => {
+        const res = await deleteIngredient(button);
+      })
     })
-  })
+  }
+  setRemoveEvents()
 </script>
 <script>
   // Update table content
@@ -116,6 +119,7 @@
     ingredients.forEach(ingredient => {
       const row = document.createElement('tr');
       row.setAttribute('class', 'bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600')
+      // console.log('ingredient unit symbol', ingredient.unit['symbol'])
 
       for (let prop in ingredient) {
         if (prop == '_id') {
@@ -124,15 +128,17 @@
 
         // Create Name Cell
         const cell = document.createElement('td');
-        cell.setAttribute('class', 'ingredient-name py-4 px-6 text-gray-900 dark:text-white')
+        cell.setAttribute('class', 'ingredient-name py-4 px-6 text-gray-900 dark:text-white');
 
         const cellInner = document.createElement('div');
-        cellInner.setAttribute('class', 'flex items-center space-x-3')
-        if (prop == 'unit') {
-          cellInner.classList.add('capitalize')
+        cellInner.setAttribute('class', 'flex items-center space-x-3');
+        if (prop === 'unit') {
+          cellInner.classList.add('capitalize');
+          cellInner.innerHTML = ingredient.unit.name;
+        } else {
+          cellInner.innerHTML = String(ingredient[prop]);
         }
 
-        cellInner.innerHTML = String(ingredient[prop]);
 
         cell.appendChild(cellInner)
 
@@ -183,7 +189,7 @@
     const unitCostInput = document.querySelector('#unitCost');
     const ingredient = {
       name: nameInput.value,
-      unit: unitInput.value,
+      symbol: unitInput.value,
       unitCost: unitCostInput.value,
     };
     fetch('/api/ingredients', {
@@ -199,10 +205,15 @@
           getIngredients()
             .then(ingredients => {
               updateTable(ingredients);
+              setRemoveEvents()
             })
             .catch(error => {
               console.error('Error:', error);
+              alert('Something went wrong. Please try again later.')
             });
+        } else {
+          console.log('Error:', response)
+          alert('Something went wrong. Please try again later.')
         }
       })
       .catch((error) => {

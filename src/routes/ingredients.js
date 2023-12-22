@@ -7,31 +7,11 @@ const {
   getIngredients,
   updateIngredient,
 } = require('../services/ingredientsServices.js');
+const { SUPPORTED_UNITS } = require('../models/IngredientModel.js');
 
 ingredientsRouter = express.Router();
 ingredientsRouter.use(express.json());
 ingredientsRouter.use(express.urlencoded({ extended: true }));
-
-// TODO: Create Ingredient class
-// TODO: Create validation for unit and unitCost
-// class Ingredient {
-//   constructor(name, unit, symbol, unitCost) {
-//     this.name = name,
-//     this.unit = unit,
-//     this.symbol = symbol,
-//     this.unitCost = unitCost,
-//   }
-// }
-
-const SUPPORTED_UNITS = [
-  { symbol: 'each', name: 'Each' },
-  { symbol: 'g', name: 'Gram' },
-  { symbol: 'kg', name: 'Kilogram' },
-  { symbol: 'cup', name: 'Cup' },
-  { symbol: 'tbsp', name: 'Tablespoon' },
-  { symbol: 'tsp', name: 'Teaspoon' },
-  { symbol: 'oz', name: 'Ounces' },
-];
 
 ingredientsRouter.route('/').get(async (req, res) => {
   try {
@@ -85,5 +65,4 @@ ingredientsRouter.route('/api/').get(async (req, res) => {
 
 module.exports = {
   ingredientsRouter,
-  SUPPORTED_UNITS,
 };

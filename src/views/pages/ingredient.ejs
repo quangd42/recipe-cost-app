@@ -10,10 +10,10 @@
           </div>
           <div class="mb-4">
             <label for="unit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Unit</label>
-            <select id="unit" name="unit" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <select id="unit" name="unit" required class="bg-gray-50 border border-gray-300 capitalize text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option>Choose a Unit</option>
               <% SUPPORTED_UNITS.forEach(unit => { %>
-              <option <% if (unit.symbol == ingredient.unit) { %> selected <% } %> value="<%= unit.symbol %>"><%= unit.name %></option>
+              <option <% if (unit.symbol == ingredient.unit.symbol) { %> selected <% } %> value="<%= unit.symbol %>"><%= unit.name %></option>
               <% }) %>
             </select>
           </div>
@@ -31,12 +31,12 @@
   // Send AJAX request to add ingredient
   const updateIngredient = () => {
     const name = document.querySelector('#ingredient_name').value;
-    const unit = document.querySelector('#unit').value;
+    const symbol = document.querySelector('#unit').value;
     const unitCost = document.querySelector('#unitCost').value;
 
     const ingredient = {
       name,
-      unit,
+      symbol,
       unitCost,
     };
 

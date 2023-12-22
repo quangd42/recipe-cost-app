@@ -2,8 +2,7 @@ const express = require('express');
 const debug = require('debug')('app:index');
 
 const { getIngredients } = require('../services/ingredientsServices.js');
-
-const { SUPPORTED_UNITS } = require('./ingredients.js');
+const { SUPPORTED_UNITS } = require('../models/IngredientModel.js');
 
 indexRouter = express.Router();
 indexRouter.use(express.json());

@@ -1,10 +1,12 @@
 const express = require('express');
+const { Ingredient } = require('../models/IngredientModel.js');
 
 const {
   createIngredient,
   getIngredient,
   getIngredients,
   updateIngredient,
+  deleteIngredient,
 } = require('../services/ingredientsServices.js');
 
 apiRouter = express.Router();
@@ -25,14 +27,14 @@ apiRouter
     }
   })
   .post(async (req, res) => {
-    const ingredient = req.body;
     try {
-      const result = await createIngredient(ingredient);
+      const ingredient = new Ingredient(req.body);
+      await createIngredient(ingredient);
 
       res.send({ message: 'Ingredient added.' });
     } catch (err) {
       console.log(err);
-      res.status(500).send('Error adding ingredient');
+      res.status(500).json({ error: 'Error adding ingredient' });
     }
   });
 
@@ -52,7 +54,7 @@ apiRouter
   .put(async (req, res) => {
     try {
       const ingredientId = req.params.id;
-      const updates = req.body;
+      const updates = new Ingredient(req.body);
 
       const result = await updateIngredient(ingredientId, updates);
       console.log(result);

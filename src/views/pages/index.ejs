@@ -42,7 +42,7 @@
             </div>
           </td>
           <td class="py-4 px-6 text-gray-900 dark:text-white border-l">
-            <select class="ingredient-unit bg-transparent appearance-none border-0 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-1 px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>
+            <select class="ingredient-unit bg-transparent appearance-none border-0 border-gray-300 capitalize text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-1 px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" disabled>
               <option selected>---</option>
               <% SUPPORTED_UNITS.forEach(unit => { %>
               <option value="<%= unit.symbol %>"><%= unit.name %></option>
@@ -195,7 +195,7 @@
       url: `/api/ingredients/${ingredientId}`,
       success: function(response) {
         unitCost.val(response.unitCost);
-        ingredientUnit.val(response.unit);
+        ingredientUnit.val(response.unit.symbol);
         calcRowCost(row);
       },
       error: function(error) {
