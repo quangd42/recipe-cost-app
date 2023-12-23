@@ -10,9 +10,7 @@ const SUPPORTED_UNITS = [
   { symbol: 'oz', name: 'ounces' },
 ];
 
-const supportedSymbols = SUPPORTED_UNITS.map((unit) => {
-  return unit.symbol;
-});
+const supportedSymbols = SUPPORTED_UNITS.map((unit) => unit.symbol);
 
 const ingredientDataSchema = Joi.object({
   name: Joi.string().trim().min(3).required(),
@@ -23,20 +21,20 @@ const ingredientDataSchema = Joi.object({
   unitCost: Joi.number().min(0).required(),
 });
 
-// console.log(
-//   ingredientDataSchema.validate({ name: 'Flour', unitCost: 3, symbol: 'Each' }),
-// );
-
 class Ingredient {
   constructor(ingredientData) {
-    const result = ingredientDataSchema.validate(ingredientData);
-    if (result.error) {
-      throw new Error('Invalid Ingredient Data.');
-    }
+    this.validateIngredientData(ingredientData);
 
     this.name = ingredientData.name;
     this.setUnit = ingredientData.symbol;
     this.unitCost = ingredientData.unitCost;
+  }
+
+  validateIngredientData(ingredientData) {
+    const result = ingredientDataSchema.validate(ingredientData);
+    if (result.error) {
+      throw new Error('Invalid Ingredient Data.');
+    }
   }
 
   set setUnit(symbol) {
@@ -45,10 +43,8 @@ class Ingredient {
   }
 
   static getUnitName(symbol) {
-    const supportedUnit = SUPPORTED_UNITS.find(
-      (unit) => unit.symbol === symbol,
-    );
-    return supportedUnit.name;
+    const unit = SUPPORTED_UNITS.find((unit) => unit.symbol === symbol);
+    return unit.name;
   }
 
   convertTo(unit) {
