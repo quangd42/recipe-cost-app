@@ -40,4 +40,10 @@ const close = async () => {
   await client.close();
 };
 
-module.exports = { connect, close, run, dbName };
+const getCollection = async (collectionName) => {
+  await client.connect();
+  let collection = client.db(dbName).collection(collectionName);
+  return collection;
+};
+
+module.exports = { connect, close, run, dbName, getCollection };
