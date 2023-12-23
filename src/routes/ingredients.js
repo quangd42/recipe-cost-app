@@ -6,7 +6,7 @@ const {
   getIngredient,
   getIngredients,
   updateIngredient,
-} = require('../services/ingredientsServices.js');
+} = require('../services/ingredientServices.js');
 const { SUPPORTED_UNITS } = require('../models/IngredientModel.js');
 
 ingredientsRouter = express.Router();
@@ -49,17 +49,6 @@ ingredientsRouter.route('/:id').get(async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).send('Error getting ingredient');
-  }
-});
-
-ingredientsRouter.route('/api/').get(async (req, res) => {
-  try {
-    const ingredients = await getIngredients();
-
-    res.send(ingredients);
-  } catch (err) {
-    console.log(err);
-    res.status(500).send('Error getting ingredients');
   }
 });
 

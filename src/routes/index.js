@@ -1,7 +1,7 @@
 const express = require('express');
 const debug = require('debug')('app:index');
 
-const { getIngredients } = require('../services/ingredientsServices.js');
+const { getIngredients } = require('../services/ingredientServices.js');
 const { SUPPORTED_UNITS } = require('../models/IngredientModel.js');
 
 indexRouter = express.Router();
