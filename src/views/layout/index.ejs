@@ -6,7 +6,8 @@
   <!-- Navbar -->
   <%- include('navbar.ejs') -%>
   <!-- Main -->
-  <%- include(`../pages/${template}.ejs`) %>
+  <%- include(`${template}`) %>
+  <script src="/static/flowbite/flowbite.js"></script>
   <!-- Footer -->
   <% include('footer.ejs') %>
 

@@ -21,6 +21,7 @@ app.use((req, res, next) => {
 app.set('views', path.join(__dirname, 'views/layout'));
 app.set('view engine', 'ejs');
 app.use(express.static('./public'));
+app.use('/static/flowbite', express.static('node_modules/flowbite/dist'));
 
 // Use Routes
 app.use('/', indexRouter);

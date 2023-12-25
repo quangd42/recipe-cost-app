@@ -19,7 +19,7 @@ ingredientsRouter.route('/').get(async (req, res) => {
 
     res.render('index', {
       title: 'Pantry',
-      template: 'ingredients',
+      template: '../pages/ingredient.ejs',
       currentUser: {
         isAuthenticated: true,
       },
@@ -39,7 +39,7 @@ ingredientsRouter.route('/:id').get(async (req, res) => {
 
     res.render('index', {
       title: `Edit ${ingredient.name}`,
-      template: 'ingredient',
+      template: '../pages/ingredient.ejs',
       currentUser: {
         isAuthenticated: true,
       },
