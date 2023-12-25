@@ -9,7 +9,7 @@ const {
 } = require('../services/ingredientServices.js');
 const { SUPPORTED_UNITS } = require('../models/IngredientModel.js');
 
-ingredientsRouter = express.Router();
+const ingredientsRouter = express.Router();
 ingredientsRouter.use(express.json());
 ingredientsRouter.use(express.urlencoded({ extended: true }));
 
@@ -19,7 +19,7 @@ ingredientsRouter.route('/').get(async (req, res) => {
 
     res.render('index', {
       title: 'Pantry',
-      template: '../pages/ingredient.ejs',
+      template: '../ingredients/index.ejs',
       currentUser: {
         isAuthenticated: true,
       },
@@ -39,7 +39,7 @@ ingredientsRouter.route('/:id').get(async (req, res) => {
 
     res.render('index', {
       title: `Edit ${ingredient.name}`,
-      template: '../pages/ingredient.ejs',
+      template: '../ingredients/single.ejs',
       currentUser: {
         isAuthenticated: true,
       },

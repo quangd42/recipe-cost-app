@@ -22,15 +22,15 @@
           <a href="/ingredients" class="block py-2 pl-3 pr-4 {% if path == url_for('ingre_list') %} text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white" aria-current="page" {% else %} text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"{% endif %}>Pantry</a>
         </li>
         <li>
-          <a href="/user/signout" class="block py-2 pl-3 pr-4 {% if path == url_for('signout') %} text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white" aria-current="page" {% else %} text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"{% endif %}>Sign Out</a>
+          <a href="/users/logout" class="block py-2 pl-3 pr-4 {% if path == url_for('signout') %} text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white" aria-current="page" {% else %} text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"{% endif %}>Sign Out</a>
         </li>
         <% } else { %>
 
         <li>
-          <a href="/signin" class="block py-2 pl-3 pr-4 {% if path == url_for('signin') %} text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white" aria-current="page" {% else %} text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"{% endif %}>Sign In</a>
+          <a href="/users/login" class="block py-2 pl-3 pr-4 {% if path == url_for('signin') %} text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white" aria-current="page" {% else %} text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"{% endif %}>Sign In</a>
         </li>
         <li>
-          <a href="/signup" class="block py-2 pl-3 pr-4 {% if path == url_for('signup') %} text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white" aria-current="page" {% else %} text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"{% endif %}>Sign Up</a>
+          <a href="/users/register" class="block py-2 pl-3 pr-4 {% if path == url_for('signup') %} text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white" aria-current="page" {% else %} text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"{% endif %}>Sign Up</a>
         </li>
         <% } %>
       </ul>
