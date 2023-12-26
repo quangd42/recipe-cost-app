@@ -1,49 +1,27 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const mongoose = require('mongoose');
 require('dotenv').config();
 
 const uri = process.env.MONGODB_URI;
-const dbName = 'recipe-cost-app';
-
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  },
-});
-
-const run = async () => {
-  try {
-    // Connect the client to the server (optional starting in v4.7)
-    await client.connect();
-    // Send a ping to confirm a successful connection
-    await client.db('admin').command({ ping: 1 });
-    console.log(
-      'Pinged your deployment. You successfully connected to MongoDB!',
-    );
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
-};
+// const dbName = 'recipe-cost-app';
+const dbName = process.env.MONGODB_NAME;
 
 const connect = async () => {
   try {
-    await client.connect();
+    await mongoose.connect(uri, {
+      dbName,
+    });
+    console.log('Connected to MongoDB!');
   } catch (err) {
     console.log(err.stack);
   }
-  return client;
 };
 
 const close = async () => {
-  await client.close();
+  await mongoose.connection.close();
 };
 
 const getCollection = async (collectionName) => {
-  await client.connect();
-  let collection = client.db(dbName).collection(collectionName);
-  return collection;
+  return mongoose.connection.db.collection(collectionName);
 };
 
-module.exports = { connect, close, run, dbName, getCollection };
+module.exports = { connect, close, getCollection };
