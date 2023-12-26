@@ -20,8 +20,8 @@ userApiRouter
   })
   .post(async (req, res) => {
     try {
-      const user = new User(req.body);
-      await createUser(user);
+      const userData = req.body;
+      await createUser(userData);
 
       res.send({ message: 'User added.' });
     } catch (err) {

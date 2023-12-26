@@ -1,18 +1,24 @@
-const Joi = require('joi');
+const mongoose = require('mongoose');
 
-const userSchema = Joi.object({
-  username: Joi.string().alphanum().min(3).max(30).allow('.').trim().required(),
-  email: Joi.string().email({ minDomainSegments: 2 }).trim().required(),
-  password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/),
+const userSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+  },
+  password: {
+    type: String,
+    required: true,
+    minlength: 6,
+    maxlength: 30,
+    match: /^(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9]{6,30}$/,
+  },
 });
 
-class User {
-  constructor(userData) {
-    userSchema.validate(userData);
-    this.name = userData.name;
-    this.email = userData.email;
-    this.password = userData.password;
-  }
-}
+const User = mongoose.model('User', userSchema);
 
-module.exports = User;
+module.exports = {
+  User,
+};

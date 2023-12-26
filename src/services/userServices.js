@@ -1,62 +1,21 @@
-const { getCollection } = require('./connection');
-const { ObjectId } = require('mongodb');
+const { User } = require('../models/UserModel');
 
-const collectionName = 'users';
+const createUser = async (userData) => {
+  const existingUser = await User.findOne({ email: userData.email });
 
-const createUser = async (user) => {
-  const collection = getCollection(collectionName);
-  const res = await collection.insertOne(user);
-  return res;
+  if (existingUser) {
+    throw new Error('Email taken');
+  }
+
+  const user = new User(userData);
+  return await user.save();
 };
 
 const getUser = async (userId) => {
-  const collection = getCollection(collectionName);
-
-  const objectId = new ObjectId(userId);
-  const res = await collection.findOne({ _id: objectId });
-
-  return res;
-};
-
-const getUsers = async () => {
-  const collection = getCollection(collectionName);
-
-  const options = {
-    sort: { name: 1 },
-    projection: { _id: 1, name: 1, email: 1 },
-  };
-
-  const res = await collection.find({}, options).toArray();
-  return res;
-};
-
-const updateUser = async (userId, updates) => {
-  const collection = getCollection(collectionName);
-
-  const objectId = new ObjectId(userId);
-  const filter = { _id: objectId };
-  const updateDoc = {
-    $set: updates,
-  };
-
-  const res = await collection.updateOne(filter, updateDoc);
-  return res;
-};
-
-const deleteUser = async (userId) => {
-  const collection = getCollection(collectionName);
-
-  const objectId = new ObjectId(userId);
-  const filter = { _id: objectId };
-
-  const res = await collection.deleteOne(filter);
-  return res;
+  return await User.findById(userId);
 };
 
 module.exports = {
   createUser,
   getUser,
-  getUsers,
-  updateUser,
-  deleteUser,
 };

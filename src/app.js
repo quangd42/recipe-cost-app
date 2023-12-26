@@ -8,6 +8,7 @@ const debug = require('debug')('app');
 const { indexRouter } = require('./routes/index');
 const { ingredientsRouter } = require('./routes/ingredients');
 const { apiRouter } = require('./routes/api');
+const { usersRouter } = require('./routes/users');
 
 const app = express();
 app.use(express.json());
@@ -26,6 +27,7 @@ app.use('/static/flowbite', express.static('node_modules/flowbite/dist'));
 // Use Routes
 app.use('/', indexRouter);
 app.use('/ingredients', ingredientsRouter);
+app.use('/users', usersRouter);
 app.use('/api', apiRouter);
 
 module.exports = app;

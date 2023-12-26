@@ -1561,6 +1561,10 @@ h3 {
   background-color: rgb(253 242 242 / var(--tw-bg-opacity));
 }
 
+.bg-none {
+  background-image: none;
+}
+
 .p-1 {
   padding: 0.25rem;
 }
