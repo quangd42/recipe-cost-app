@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+
+const saltRounds = 10;
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -15,6 +18,14 @@ const userSchema = new mongoose.Schema({
     maxlength: 30,
     match: /^(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9]{6,30}$/,
   },
+});
+
+userSchema.pre('save', async function () {
+  try {
+    this.password = await bcrypt.hash(this.password, saltRounds);
+  } catch (err) {
+    throw err;
+  }
 });
 
 const User = mongoose.model('User', userSchema);
