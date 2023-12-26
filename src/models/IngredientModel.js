@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const mongoose = require('mongoose');
 
 const SUPPORTED_UNITS = [
   { symbol: 'each', name: 'each' },
@@ -12,45 +12,42 @@ const SUPPORTED_UNITS = [
 
 const supportedSymbols = SUPPORTED_UNITS.map((unit) => unit.symbol);
 
-const ingredientDataSchema = Joi.object({
-  name: Joi.string().trim().min(3).required(),
-  symbol: Joi.string()
-    .lowercase()
-    .valid(...supportedSymbols)
-    .required(),
-  unitCost: Joi.number().min(0).required(),
+const getUnitName = (symbol) => {
+  const unit = SUPPORTED_UNITS.find((unit) => unit.symbol == symbol);
+
+  return unit.name;
+};
+
+const ingredientSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    min: 3,
+    trim: true,
+    required: true,
+  },
+
+  unit: {
+    symbol: {
+      type: String,
+      required: true,
+      enum: [...supportedSymbols],
+    },
+    name: String,
+  },
+
+  unitCost: {
+    type: Number,
+    required: true,
+  },
 });
 
-class Ingredient {
-  constructor(ingredientData) {
-    this.validateIngredientData(ingredientData);
+ingredientSchema.virtual('unitSymbol').set(function (symbol) {
+  console.log('set symbol', symbol);
+  this.unit.symbol = symbol;
+  this.unit.name = getUnitName(symbol);
+});
 
-    this.name = ingredientData.name;
-    this.setUnit = ingredientData.symbol;
-    this.unitCost = ingredientData.unitCost;
-  }
-
-  validateIngredientData(ingredientData) {
-    const result = ingredientDataSchema.validate(ingredientData);
-    if (result.error) {
-      throw new Error('Invalid Ingredient Data.');
-    }
-  }
-
-  set setUnit(symbol) {
-    const unit = SUPPORTED_UNITS.find((unit) => unit.symbol === symbol);
-    this.unit = unit;
-  }
-
-  static getUnitName(symbol) {
-    const unit = SUPPORTED_UNITS.find((unit) => unit.symbol === symbol);
-    return unit.name;
-  }
-
-  convertTo(unit) {
-    // Add conversion logic here
-  }
-}
+const Ingredient = mongoose.model('Ingredient', ingredientSchema);
 
 module.exports = {
   Ingredient,

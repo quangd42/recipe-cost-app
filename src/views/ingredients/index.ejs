@@ -121,50 +121,49 @@
       row.setAttribute('class', 'bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600')
       // console.log('ingredient unit symbol', ingredient.unit['symbol'])
 
-      for (let prop in ingredient) {
-        if (prop == '_id') {
-          continue
-        }
+      const ingredientProps = new Map();
+      ingredientProps.set('name', ingredient.name);
+      ingredientProps.set('unit', ingredient.unit);
+      ingredientProps.set('unitCost', ingredient.unitCost);
 
-        // Create Name Cell
-        const cell = document.createElement('td');
-        cell.setAttribute('class', 'ingredient-name py-4 px-6 text-gray-900 dark:text-white');
-
-        const cellInner = document.createElement('div');
-        cellInner.setAttribute('class', 'flex items-center space-x-3');
-        if (prop === 'unit') {
-          cellInner.classList.add('capitalize');
-          cellInner.innerHTML = ingredient.unit.name;
-        } else {
-          cellInner.innerHTML = String(ingredient[prop]);
-        }
-
-
-        cell.appendChild(cellInner)
-
-        row.appendChild(cell)
-
-        tbody.appendChild(row)
-      }
-
+      // Ingredient info cell
+      ingredientProps.forEach((value, key, map) => {
+          const cell = document.createElement('td');
+          cell.setAttribute('class', 'ingredient-name py-4 px-6 text-gray-900 dark:text-white');
+  
+          const cellInner = document.createElement('div');
+          cellInner.setAttribute('class', 'flex items-center space-x-3');
+          if (key === 'unit') {
+            cellInner.classList.add('capitalize');
+            cellInner.innerHTML = value.name;
+          } else {
+            cellInner.innerHTML = value;
+          }
+  
+          cell.appendChild(cellInner)
+          row.appendChild(cell)
+          
+        })
+      // Action Cell
       const actionCell = document.createElement('td');
       actionCell.setAttribute('class', 'py-4 px-6 flex justify-start gap-4');
-
+      
       const editLink = document.createElement('a');
       editLink.setAttribute('href', `${ingredient._id}`);
       editLink.setAttribute('class', 'font-medium cursor-pointer text-blue-600 dark:text-blue-500');
       editLink.innerHTML = 'Edit';
       actionCell.appendChild(editLink);
-
+      
       const deleteButton = document.createElement('input');
       deleteButton.setAttribute('type', 'submit');
       deleteButton.setAttribute('value', 'Delete');
       deleteButton.setAttribute('data-id', `${ingredient._id}`);
       deleteButton.setAttribute('class', 'remove-button cursor-pointer font-medium text-red-600 dark:text-red-500')
       actionCell.appendChild(deleteButton)
-
+      
       row.appendChild(actionCell)
-
+        
+      tbody.appendChild(row)
     });
 
   }

@@ -7,7 +7,7 @@ const {
   getIngredients,
   updateIngredient,
 } = require('../services/ingredientServices.js');
-const { SUPPORTED_UNITS } = require('../models/IngredientModel.js');
+const { Ingredient, SUPPORTED_UNITS } = require('../models/IngredientModel.js');
 
 const ingredientsRouter = express.Router();
 ingredientsRouter.use(express.json());
@@ -15,7 +15,8 @@ ingredientsRouter.use(express.urlencoded({ extended: true }));
 
 ingredientsRouter.route('/').get(async (req, res) => {
   try {
-    const ingredients = await getIngredients();
+    const ingredients = await Ingredient.find({}).sort({ name: 1 });
+    console.log(ingredients);
 
     res.render('index', {
       title: 'Pantry',

@@ -28,13 +28,13 @@ ingredientApiRouter
   })
   .post(async (req, res) => {
     try {
-      const ingredient = new Ingredient(req.body);
-      await createIngredient(ingredient);
+      const ingredientData = req.body;
+      await createIngredient(ingredientData);
 
       res.send({ message: 'Ingredient added.' });
     } catch (err) {
       console.log(err);
-      res.status(500).json({ error: 'Error adding ingredient' });
+      res.status(500).json({ error: err.message });
     }
   });
 
@@ -74,17 +74,8 @@ ingredientApiRouter
   .delete(async (req, res) => {
     try {
       const result = await deleteIngredient(req.params.id);
-      console.log(result);
-
-      if (result.deletedCount === 1) {
-        console.log('Successfully deleted one document.');
-        res.status(200).send(result);
-      } else {
-        console.log('No documents matched the query. Deleted 0 documents.');
-        res
-          .status(500)
-          .error('No documents matched the query. Deleted 0 documents.');
-      }
+      console.log(`Deleted ${result}`);
+      res.send({ message: 'Ingredient deleted' });
     } catch (err) {
       console.log(err);
       res.status(500).send('Error deleting ingredient');

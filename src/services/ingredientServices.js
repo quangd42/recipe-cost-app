@@ -1,54 +1,48 @@
-const { getCollection } = require('./connection');
-const { ObjectId } = require('mongodb');
+const { Ingredient } = require('../models/IngredientModel');
 
-const collectionName = 'ingredients';
+const createIngredient = async (ingredientData) => {
+  const existingIngre = await Ingredient.findOne({ name: ingredientData.name });
 
-const createIngredient = async (ingredient) => {
-  const collection = await getCollection(collectionName);
-  const res = await collection.insertOne(ingredient);
+  if (existingIngre) {
+    throw new Error('Ingredient exists.');
+  }
+
+  const ingredient = new Ingredient({
+    name: ingredientData.name,
+    unitSymbol: ingredientData.symbol,
+    unitCost: ingredientData.unitCost,
+  });
+
+  const res = await ingredient.save();
 
   return res;
 };
 
 const getIngredient = async (ingredientId) => {
-  const collection = await getCollection(collectionName);
-  const objectId = new ObjectId(ingredientId);
-  const res = await collection.findOne({ _id: objectId });
+  const res = await Ingredient.findById(ingredientId);
 
   return res;
 };
 
 const getIngredients = async () => {
-  const collection = await getCollection(collectionName);
-  console.log('collection: ', collection);
-  const options = {
-    sort: { name: 1 },
-    projection: { _id: 1, name: 1, unit: 1, unitCost: 1 },
-  };
-  const res = await collection.find({}, options).toArray();
+  const res = await Ingredient.find({}).sort({ name: 1 });
 
   return res;
 };
 
-const updateIngredient = async (ingredientId, updates) => {
-  const collection = await getCollection(collectionName);
-  const objectId = new ObjectId(ingredientId);
-  const filter = { _id: objectId };
-  const updateDoc = {
-    $set: updates,
+const updateIngredient = async (ingredientId, updateData) => {
+  const updates = {
+    name: updateData.name,
+    unitSymbol: updateData.symbol,
+    unitCost: updateData.unitCost,
   };
-
-  const res = await collection.updateOne(filter, updateDoc);
+  const res = await Ingredient.findByIdAndUpdate(ingredientId, updates);
 
   return res;
 };
 
 const deleteIngredient = async (ingredientId) => {
-  const collection = await getCollection(collectionName);
-  const objectId = new ObjectId(ingredientId);
-  const filter = { _id: objectId };
-
-  const res = await collection.deleteOne(filter);
+  const res = await Ingredient.findByIdAndDelete(ingredientId);
 
   return res;
 };
