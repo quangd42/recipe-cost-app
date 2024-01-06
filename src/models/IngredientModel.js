@@ -39,6 +39,17 @@ const ingredientSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+
+  created: {
+    type: Date,
+    default: Date.now,
+  },
+
+  user: {
+    type: mongoose.ObjectId,
+    ref: 'User',
+    required: true,
+  },
 });
 
 ingredientSchema.virtual('unitSymbol').set(function (symbol) {

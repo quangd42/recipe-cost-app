@@ -1,14 +1,6 @@
 const express = require('express');
 const { Ingredient } = require('../../models/IngredientModel.js');
 
-const {
-  createIngredient,
-  getIngredient,
-  getIngredients,
-  updateIngredient,
-  deleteIngredient,
-} = require('../../config/ingredientServices.js');
-
 ingredientApiRouter = express.Router();
 
 ingredientApiRouter.use(express.json());
@@ -18,7 +10,9 @@ ingredientApiRouter
   .route('/')
   .get(async (req, res) => {
     try {
-      const ingredients = await getIngredients();
+      const ingredients = await Ingredient.find({ user: req.user._id }).sort({
+        name: 1,
+      });
       console.log(ingredients);
       res.send(JSON.stringify(ingredients));
     } catch (error) {
@@ -29,7 +23,22 @@ ingredientApiRouter
   .post(async (req, res) => {
     try {
       const ingredientData = req.body;
-      await createIngredient(ingredientData);
+      const existingIngre = await Ingredient.findOne({
+        name: ingredientData.name,
+      });
+
+      if (existingIngre) {
+        throw new Error('Ingredient exists.');
+      }
+
+      const ingredient = new Ingredient({
+        name: ingredientData.name,
+        unitSymbol: ingredientData.symbol,
+        unitCost: ingredientData.unitCost,
+        user: req.user._id,
+      });
+
+      await ingredient.save();
 
       res.send({ message: 'Ingredient added.' });
     } catch (err) {
@@ -42,8 +51,11 @@ ingredientApiRouter
   .route('/:id')
   .get(async (req, res) => {
     try {
-      const ingredientId = req.params.id;
-      const ingredient = await getIngredient(ingredientId);
+      const filter = {
+        _id: req.params.id,
+        user: req.user._id,
+      };
+      const ingredient = await Ingredient.find(filter);
 
       res.send(ingredient);
     } catch (err) {
@@ -53,10 +65,17 @@ ingredientApiRouter
   })
   .put(async (req, res) => {
     try {
-      const ingredientId = req.params.id;
-      const updates = new Ingredient(req.body);
+      const filter = {
+        _id: req.params.id,
+        user: req.user._id,
+      };
+      const updates = {
+        name: req.body.name,
+        unitSymbol: req.body.symbol,
+        unitCost: req.body.unitCost,
+      };
 
-      const result = await updateIngredient(ingredientId, updates);
+      const result = await Ingredient.findOneAndUpdate(filter, updates);
       console.log(result);
 
       if (result.modifiedCount === 1) {
@@ -73,7 +92,11 @@ ingredientApiRouter
   })
   .delete(async (req, res) => {
     try {
-      const result = await deleteIngredient(req.params.id);
+      const filter = {
+        _id: req.params.id,
+        user: req.user._id,
+      };
+      const result = await Ingredient.findOneAndDelete(filter);
       console.log(`Deleted ${result}`);
       res.send({ message: 'Ingredient deleted' });
     } catch (err) {

@@ -1,12 +1,6 @@
 const express = require('express');
 const debug = require('debug')('app:ingredients');
 
-const {
-  createIngredient,
-  getIngredient,
-  getIngredients,
-  updateIngredient,
-} = require('../config/ingredientServices.js');
 const { Ingredient, SUPPORTED_UNITS } = require('../models/IngredientModel.js');
 
 const ingredientsRouter = express.Router();
@@ -33,8 +27,11 @@ ingredientsRouter.route('/').get(async (req, res) => {
 
 ingredientsRouter.route('/:id').get(async (req, res) => {
   try {
-    const ingredientId = req.params.id;
-    const ingredient = await getIngredient(ingredientId);
+    const filter = {
+      _id: req.params.id,
+      user: req.user._id,
+    };
+    const ingredient = await Ingredient.findOne(filter);
 
     res.render('index', {
       title: `Edit ${ingredient.name}`,
