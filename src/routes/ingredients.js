@@ -6,7 +6,7 @@ const {
   getIngredient,
   getIngredients,
   updateIngredient,
-} = require('../services/ingredientServices.js');
+} = require('../config/ingredientServices.js');
 const { Ingredient, SUPPORTED_UNITS } = require('../models/IngredientModel.js');
 
 const ingredientsRouter = express.Router();
@@ -21,9 +21,7 @@ ingredientsRouter.route('/').get(async (req, res) => {
     res.render('index', {
       title: 'Pantry',
       template: '../ingredients/index.ejs',
-      currentUser: {
-        isAuthenticated: true,
-      },
+      user: req.user,
       ingredients,
       SUPPORTED_UNITS,
     });
@@ -41,9 +39,7 @@ ingredientsRouter.route('/:id').get(async (req, res) => {
     res.render('index', {
       title: `Edit ${ingredient.name}`,
       template: '../ingredients/single.ejs',
-      currentUser: {
-        isAuthenticated: true,
-      },
+      user: req.user,
       ingredient,
       SUPPORTED_UNITS,
     });

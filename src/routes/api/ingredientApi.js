@@ -7,7 +7,7 @@ const {
   getIngredients,
   updateIngredient,
   deleteIngredient,
-} = require('../../services/ingredientServices.js');
+} = require('../../config/ingredientServices.js');
 
 ingredientApiRouter = express.Router();
 

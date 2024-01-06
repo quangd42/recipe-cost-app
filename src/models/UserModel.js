@@ -28,6 +28,15 @@ userSchema.pre('save', async function () {
   }
 });
 
+userSchema.methods.verifyPassword = async function (plainPassword) {
+  try {
+    const hash = this.password;
+    return await bcrypt.compare(plainPassword, hash);
+  } catch (err) {
+    throw err;
+  }
+};
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = {

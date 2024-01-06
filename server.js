@@ -1,6 +1,6 @@
 const debug = require('debug')('app');
 const app = require('./src/app');
-const { connect } = require('./src/services/connection');
+const { connect } = require('./src/config/dbConfig');
 
 const PORT = process.env.PORT || 3000;
 

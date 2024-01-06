@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { getIngredients } = require('../services/ingredientServices.js');
+const { getIngredients } = require('../config/ingredientServices.js');
 const { SUPPORTED_UNITS } = require('../models/IngredientModel.js');
 
 const indexRouter = express.Router();
@@ -13,9 +13,7 @@ indexRouter.get('/', async (req, res) => {
   res.render('index', {
     title: 'Home',
     template: '../index',
-    currentUser: {
-      isAuthenticated: true,
-    },
+    user: req.user,
     ingredients,
     SUPPORTED_UNITS,
   });
