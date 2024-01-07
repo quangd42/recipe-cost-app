@@ -8,7 +8,12 @@ indexRouter.use(express.urlencoded({ extended: true }));
 
 // Render Home page
 indexRouter.get('/', async (req, res) => {
-  const ingredients = await Ingredient.find({}).sort({ name: 1 });
+  if (!req.user) {
+    return res.redirect('/users/login');
+  }
+  const ingredients = await Ingredient.find({ user: req.user._id }).sort({
+    name: 1,
+  });
   res.render('index', {
     title: 'Home',
     template: '../index',

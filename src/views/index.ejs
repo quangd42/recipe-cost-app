@@ -194,6 +194,7 @@
       type: "GET",
       url: `/api/ingredients/${ingredientId}`,
       success: function(response) {
+        // console.log('get response', response)
         unitCost.val(response.unitCost);
         ingredientUnit.val(response.unit.symbol);
         calcRowCost(row);

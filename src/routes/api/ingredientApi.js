@@ -55,7 +55,7 @@ ingredientApiRouter
         _id: req.params.id,
         user: req.user._id,
       };
-      const ingredient = await Ingredient.find(filter);
+      const ingredient = await Ingredient.findOne(filter);
 
       res.send(ingredient);
     } catch (err) {

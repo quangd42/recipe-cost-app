@@ -8,16 +8,8 @@ const usersRouter = express.Router();
 usersRouter.use(express.json());
 usersRouter.use(express.urlencoded({ extended: true }));
 
-function isLoggedIn(req, res, next) {
-  if (req.user) {
-    next(); // If logged in, proceed to the next middleware or route handler
-  } else {
-    res.redirect('/users/login'); // If not logged in, redirect to login page
-  }
-}
-
 usersRouter
-  .get('/login', isLoggedIn, async (req, res) => {
+  .get('/login', async (req, res) => {
     res.render('index', {
       title: 'Login',
       template: '../users/login.ejs',
