@@ -2,15 +2,21 @@
 <html lang="en">
 <%- include('header.ejs') %>
 
-<body class="">
+<body class="bg-gray-50">
   <!-- Navbar -->
   <%- include('navbar.ejs') -%>
+
+  <!-- Alert -->
+  <%- include('alert.ejs') %>
+
   <!-- Main -->
-  <%- include(`${template}`) %>
+  <main class="sm:px-4 py-8 bg-gray-50">
+    <%- include(`${template}`) %>
+  </main>
   <script src="/static/flowbite/flowbite.js"></script>
+
   <!-- Footer -->
   <% include('footer.ejs') %>
-
 </body>
 
 </html>
