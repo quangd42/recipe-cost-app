@@ -93,6 +93,7 @@ ingredientApiRouter
         user: req.user._id,
       };
       const result = await Ingredient.findOneAndDelete(filter);
+
       res.flash('success', 'Ingredient deleted.');
       res.json(result);
     } catch (err) {
