@@ -1,21 +1,31 @@
 // Helper functions
 
-// SetRemoveEvents on remove buttons
-const setRemoveEvents = () => {
-  const removeButtons = document.querySelectorAll('.remove-button');
-  removeButtons.forEach((button) => {
-    button.addEventListener('click', async () => {
+// set listener on ONE remove button
+const setRemoveEvent = (button) => {
+  button.addEventListener('click', async () => {
+    if (confirm('Are you sure you want to delete this ingredient?')) {
       await deleteIngredient(button);
-    });
+    }
   });
 };
 
-document.addEventListener('DOMContentLoaded', setRemoveEvents());
+// set listener on all remove buttons on page load
+const setAllRemoveEvents = () => {
+  const removeButtons = document.querySelectorAll('.remove-button');
+  removeButtons.forEach((button) => {
+    setRemoveEvent(button);
+  });
+};
+
+document.addEventListener('DOMContentLoaded', setAllRemoveEvents());
 
 // Update table content
 const updateTable = (ingredients) => {
   console.log('ingredients', ingredients);
   const tbody = window.document.querySelector('#ingredient_list tbody');
+  if (!tbody) {
+    return location.reload();
+  }
   tbody.innerHTML = '';
 
   ingredients.forEach((ingredient) => {
@@ -72,13 +82,12 @@ const updateTable = (ingredients) => {
       'class',
       'remove-button cursor-pointer font-medium text-red-600 dark:text-red-500',
     );
+    setRemoveEvent(deleteButton);
     actionCell.appendChild(deleteButton);
 
     row.appendChild(actionCell);
 
     tbody.appendChild(row);
-
-    setRemoveEvents();
   });
 };
 
@@ -94,23 +103,22 @@ const clearAddIngredientForm = (inputFields) => {
 
 // Send delete ingredient request
 const deleteIngredient = async (button) => {
-  if (confirm('Are you sure you want to delete this ingredient?')) {
-    fetch(`/api/ingredients/${button.dataset.id}`, {
-      method: 'DELETE',
+  fetch(`/api/ingredients/${button.dataset.id}`, {
+    method: 'DELETE',
+  })
+    .then((res) => {
+      if (!res.ok) {
+        alert('Something went wrong, please try again later.');
+        console.log(res);
+      } else {
+        const row = button.closest('tr');
+        row.remove();
+        alert('Ingredient deleled successfully.');
+      }
     })
-      .then((res) => {
-        if (!res.ok) {
-          alert('Something went wrong, please try again later.');
-          console.log(res);
-        } else {
-          const row = button.closest('tr');
-          row.remove();
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }
+    .catch((err) => {
+      console.error(err);
+    });
 };
 
 const getIngredients = async () => {
@@ -150,8 +158,8 @@ const addIngredient = () => {
         getIngredients()
           .then((ingredients) => {
             updateTable(ingredients);
-            setRemoveEvents();
             clearAddIngredientForm([nameInput, unitInput, unitCostInput]);
+            alert(`${ingredient.name} added successfully.`);
           })
           .catch((error) => {
             console.error('Error:', error);

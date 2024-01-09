@@ -9,6 +9,7 @@ indexRouter.use(express.urlencoded({ extended: true }));
 // Render Home page
 indexRouter.get('/', async (req, res) => {
   if (!req.user) {
+    res.flash('error', 'Please login to use the application.');
     return res.redirect('/users/login');
   }
   const ingredients = await Ingredient.find({ user: req.user._id }).sort({

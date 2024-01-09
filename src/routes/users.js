@@ -16,21 +16,29 @@ usersRouter
       user: req.user,
     });
   })
-  .post(
-    '/login',
-    passport.authenticate('local', {
-      failureRedirect: '/users/login',
-      failureMessage: true,
-      successReturnToOrRedirect: '/',
-    }),
-  );
+  .post('/login', function (req, res, next) {
+    passport.authenticate('local', function (err, user, info, status) {
+      if (err) {
+        return next(err);
+      }
+      if (!user) {
+        res.flash('error', 'Incorrect Username or Password.');
+        return res.redirect(req.get('referer'));
+      }
+      req.login(user, function () {
+        res.flash('success', 'Logged in successfully!');
+        res.redirect('/');
+      });
+    })(req, res, next);
+  });
 
 usersRouter.post('/logout', function (req, res, next) {
   req.logout(function (err) {
     if (err) {
       return next(err);
     }
-    res.redirect('/');
+    res.flash('info', 'Logged out!');
+    res.redirect('/users/login');
   });
 });
 
@@ -53,17 +61,19 @@ usersRouter
         throw new Error('Email taken');
       }
 
-      const user = new User(userData);
-      user = await user.save();
+      const user = await new User(userData).save();
       req.login(user, function () {
+        res.flash('success', 'User registered!');
         res.redirect('/');
       });
     } catch (err) {
       if (err.message === 'Email taken') {
-        res.send(JSON.stringify(err));
+        res.flash('error', err.message);
+        res.redirect(req.get('referer'));
       } else {
         console.log(err);
-        res.status(500).send('Error registering new user.');
+        res.flash('error', err.message);
+        res.redirect(req.get('referer'));
       }
     }
   });
