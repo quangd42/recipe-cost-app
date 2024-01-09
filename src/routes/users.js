@@ -13,6 +13,7 @@ usersRouter
     res.render('index', {
       title: 'Login',
       template: '../users/login.ejs',
+      envName: process.env.ENV_NAME,
       user: req.user,
     });
   })
@@ -48,6 +49,7 @@ usersRouter
     res.render('index', {
       title: 'Register',
       template: '../users/register.ejs',
+      envName: process.env.ENV_NAME,
       user: req.user,
     });
   })

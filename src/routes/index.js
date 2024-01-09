@@ -15,9 +15,11 @@ indexRouter.get('/', async (req, res) => {
   const ingredients = await Ingredient.find({ user: req.user._id }).sort({
     name: 1,
   });
+
   res.render('index', {
     title: 'Home',
     template: '../index',
+    envName: process.env.ENV_NAME,
     user: req.user,
     ingredients,
     SUPPORTED_UNITS,

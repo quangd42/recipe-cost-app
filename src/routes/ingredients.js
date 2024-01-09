@@ -16,6 +16,7 @@ ingredientsRouter.route('/').get(async (req, res) => {
     res.render('index', {
       title: 'Pantry',
       template: '../ingredients/index.ejs',
+      envName: process.env.ENV_NAME,
       user: req.user,
       ingredients,
       SUPPORTED_UNITS,
@@ -37,6 +38,7 @@ ingredientsRouter.route('/:id').get(async (req, res) => {
     res.render('index', {
       title: `Edit ${ingredient.name}`,
       template: '../ingredients/single.ejs',
+      envName: process.env.ENV_NAME,
       user: req.user,
       ingredient,
       SUPPORTED_UNITS,

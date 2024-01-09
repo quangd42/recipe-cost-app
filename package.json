@@ -4,7 +4,8 @@
   "description": "Recipe Cost with node",
   "main": "index.js",
   "scripts": {
-    "start": "DEBUG=app,app:* nodemon server.js",
+    "start": "node server.js",
+    "local": "DEBUG=app,app:* nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "tailwind": "npx tailwindcss -i ./src/css/input.css -o ./public/css/output.css --watch"
   },

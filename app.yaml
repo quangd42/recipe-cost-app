@@ -1,0 +1,7 @@
+runtime: nodejs20
+
+env_variables:
+  NODE_ENV: PRODUCTION
+  ENV_NAME: ''
+  MONGODB_NAME: 'production'
+  SESSION_SECRET: 'very very secret secret'

@@ -30,7 +30,7 @@ app.use((req, res, next) => {
 
 // Set up session
 const sess = {
-  secret: 'very secret recipe',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false },
@@ -50,6 +50,7 @@ app.use(passport.session());
 // Set up flash
 app.use(flash({ sessionKeyName: 'express-flash-message' }));
 
+// Set up view related stuff
 app.set('views', path.join(__dirname, 'views/layout'));
 app.set('view engine', 'ejs');
 app.use(express.static('./public'));
