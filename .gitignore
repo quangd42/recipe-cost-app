@@ -2,3 +2,4 @@
 /google-cloud-sdk
 .DS_Store
 .env
+app.yaml
