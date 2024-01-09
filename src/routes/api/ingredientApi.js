@@ -13,8 +13,8 @@ ingredientApiRouter
       const ingredients = await Ingredient.find({ user: req.user._id }).sort({
         name: 1,
       });
-      console.log(ingredients);
-      res.send(JSON.stringify(ingredients));
+      // console.log(ingredients);
+      res.json(ingredients);
     } catch (error) {
       console.log(err);
       res.status(500).send('Error getting ingredients');
@@ -25,6 +25,7 @@ ingredientApiRouter
       const ingredientData = req.body;
       const existingIngre = await Ingredient.findOne({
         name: ingredientData.name,
+        user: req.user._id,
       });
 
       if (existingIngre) {
@@ -38,9 +39,9 @@ ingredientApiRouter
         user: req.user._id,
       });
 
-      await ingredient.save();
+      const result = await ingredient.save();
 
-      res.send({ message: 'Ingredient added.' });
+      res.json(result);
     } catch (err) {
       console.log(err);
       res.status(500).json({ error: err.message });
@@ -57,7 +58,7 @@ ingredientApiRouter
       };
       const ingredient = await Ingredient.findOne(filter);
 
-      res.send(ingredient);
+      res.json(ingredient);
     } catch (err) {
       console.log(err);
       res.status(500).send('Error getting ingredient');
@@ -69,22 +70,17 @@ ingredientApiRouter
         _id: req.params.id,
         user: req.user._id,
       };
-      const updates = {
-        name: req.body.name,
-        unitSymbol: req.body.symbol,
-        unitCost: req.body.unitCost,
-      };
 
-      const result = await Ingredient.findOneAndUpdate(filter, updates);
-      console.log(result);
+      const ingredient = await Ingredient.findOne(filter);
 
-      if (result.modifiedCount === 1) {
-        console.log(`Successfully modified one ingredient.`);
-      } else {
-        console.log(`No ingredient modified`);
-      }
+      ingredient.name = req.body.name;
+      ingredient.unitSymbol = req.body.symbol;
+      ingredient.unitCost = req.body.unitCost;
 
-      res.send({ message: `Ingredient updated.` });
+      const result = await ingredient.save();
+
+      res.flash('success', `${ingredient.name} updated.`);
+      res.json(result);
     } catch (err) {
       console.log(err);
       res.status(500).send('Error modifying ingredient');
@@ -97,8 +93,8 @@ ingredientApiRouter
         user: req.user._id,
       };
       const result = await Ingredient.findOneAndDelete(filter);
-      console.log(`Deleted ${result}`);
-      res.send({ message: 'Ingredient deleted' });
+      res.flash('success', 'Ingredient deleted.');
+      res.json(result);
     } catch (err) {
       console.log(err);
       res.status(500).send('Error deleting ingredient');

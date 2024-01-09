@@ -9,8 +9,9 @@ ingredientsRouter.use(express.urlencoded({ extended: true }));
 
 ingredientsRouter.route('/').get(async (req, res) => {
   try {
-    const ingredients = await Ingredient.find({}).sort({ name: 1 });
-    console.log(ingredients);
+    const ingredients = await Ingredient.find({ user: req.user._id }).sort({
+      name: 1,
+    });
 
     res.render('index', {
       title: 'Pantry',
